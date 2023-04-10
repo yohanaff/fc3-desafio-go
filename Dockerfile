@@ -1,3 +1,8 @@
+FROM golang:1.18 AS builder
+WORKDIR /usr/src/app
+COPY . .
+RUN CGO_ENABLED=0 go build -ldflags="-w -s" main.go
+
 FROM scratch
-COPY fullcycle-rocks /fullcycle-rocks
-ENTRYPOINT ["/fullcycle-rocks"]
+COPY --from=builder /usr/src/app/main /main
+CMD ["/main"]
